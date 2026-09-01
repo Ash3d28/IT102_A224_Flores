@@ -21,16 +21,4 @@ class Account:
         else:
             return False
 
-""" 
-######### Learning Signature ######### 
-Programmed by: Flores Daryl
-Date Submitted: September 01, 2026
- 
-Program Description: This program is about GUI's with the ATM system!
-Reflection: I learned that I will be using streamlit to create the interface
 
-AI Usage
-[/] No AI Assistance – Completed independently without AI.
-[ ] AI as Support Tool – Used AI for explanations, syntax, or minor corrections.
-[ ] AI as Collaborative Partner – Used AI to design, structure, or co-create significant code.
-"""

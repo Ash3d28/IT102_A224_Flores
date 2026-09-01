@@ -40,7 +40,7 @@ def analyze_transactions():
                 .strip()
             )
             try:
-                current["amount" = float(amount_text)
+                current["amount"] = float(amount_text)
             except ValueError:
                 current["amount"] = 0.0
             if "type" in current and "amount" in current:
