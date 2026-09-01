@@ -2,9 +2,11 @@ def analyze_transactions():
     transactions = []
     current = {}
     try:
-        file = open("transactions.txt", "r")
-        lines = file.readline()
-        file.close()
+        #file = open("transactions.txt", "r")
+        #lines = file.readline()
+        #file.close()
+        with open("transactions.txt", "r") as file:
+            lines = file.readlines()
     except FileNotFoundError:
         return {
             "total_transactions: ": 0,
@@ -40,7 +42,7 @@ def analyze_transactions():
                 .strip()
             )
             try:
-                current["amount" = float(amount_text)
+                current["amount"] = float(amount_text)
             except ValueError:
                 current["amount"] = 0.0
             if "type" in current and "amount" in current:
@@ -59,7 +61,7 @@ def analyze_transactions():
     latest_timestamp = "None"
 
     for transaction in transactions:
-        trasaction_type = transaction["type"]
+        transaction_type = transaction["type"]
         amount = transaction["amount"]
 
         if transaction_type == "Deposit":
@@ -75,7 +77,7 @@ def analyze_transactions():
         latest_trnasaction = transaction_type
         if "timestamp" in transaction    :
             latest_timestamp = transaction["timestamp"]
-    if total_transaction > 0:
+    if total_transactions > 0:
         total_amount = (
             total_deposited + total_withdrawn
         )
@@ -96,17 +98,3 @@ def analyze_transactions():
         "latest_timestamp": latest_timestamp,
         "largest_transaction": largest_transaction
     }   
-""" 
-######### Learning Signature ######### 
-Programmed by: Flores Daryl
-Date Submitted: September 01, 2026
- 
-Program Description: This program is about GUI's with the ATM system!
-Reflection: I learned that there's a lot, and I mean a lot...
-that analysis module needs to do, jeez
-
-AI Usage
-[/] No AI Assistance – Completed independently without AI.
-[ ] AI as Support Tool – Used AI for explanations, syntax, or minor corrections.
-[ ] AI as Collaborative Partner – Used AI to design, structure, or co-create significant code.
-"""
