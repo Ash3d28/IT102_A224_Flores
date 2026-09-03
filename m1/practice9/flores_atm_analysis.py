@@ -35,7 +35,7 @@ def analyze_transactions():
             current["type"] = (
                 line.replace("Transaction:", "").strip()
             )
-        elif line.stratswith("Amount:"):
+        elif line.startswith("Amount:"):
             amount_text = (
                 line.replace("Amount: ₱", "")
                 .replace(",", "")
@@ -65,7 +65,7 @@ def analyze_transactions():
         amount = transaction["amount"]
 
         if transaction_type == "Deposit":
-            deposit += 1
+            deposits += 1
             total_deposited += amount
         elif transaction_type == "Withdraw":
             withdrawals += 1
@@ -74,7 +74,7 @@ def analyze_transactions():
         if amount > largest_transaction:
             largest_transaction = amount
             
-        latest_trnasaction = transaction_type
+        latest_transaction = transaction_type
         if "timestamp" in transaction    :
             latest_timestamp = transaction["timestamp"]
     if total_transactions > 0:

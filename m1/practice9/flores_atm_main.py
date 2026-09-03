@@ -1,10 +1,10 @@
 import streamlit as st
-from flores_atm_account import Account
-import flores_atm_balance
-import flores_atm_deposit
-import flores_atm_history
-import flores_atm_analysis
-import flores_atm_withdraw
+from m1.practice9.flores_atm_account import Account
+import m1.practice9.flores_atm_balance as flores_atm_balance
+import m1.practice9.flores_atm_deposit as flores_atm_deposit
+import m1.practice9.flores_atm_history as flores_atm_history
+import m1.practice9.flores_atm_analysis as flores_atm_analysis
+import m1.practice9.flores_atm_withdraw as flores_atm_withdraw
 
 account = Account("Juan Dela Cruz", 10000.00)
 st.set_page_config(
@@ -30,7 +30,6 @@ choice = st.sidebar.radio(
         "Analyze Transactions"
     ]
 )
-
 if choice == "Check Balance":
     st.header("Check Balance")
     balance = (flores_atm_balance.check_balance(account))
@@ -40,8 +39,8 @@ elif choice == "Deposit":
     st.header("Deposit Money")
     amount = st.number_input(
         "Enter deposit amount",
-        min_value=0.0,
-        step=100.0,
+        min_value = 0.0,
+        step = 100.0,
         format="%.2f"
     )
     if st.button("Deposit Money"):
@@ -61,9 +60,9 @@ elif choice == "Withdraw":
     )
     amount = st.number_input(
         "Enter withdrawal amount",
-        min_value=0.0,
-        step=100.0,
-        format="%.2f"
+        min_value = 0.0,
+        step = 100.0,
+        format = "%.2f"
     )
     if st.button("Withdraw Money"):
         if amount <= 0:
@@ -115,7 +114,7 @@ elif choice == "View History":
             hide_index=True
         )
     else:
-        st.info("No transactions available.")
+        st.info("None none none transactions available.")
 
 elif choice == "Analyze Transactions":
     st.header("Transaction Analysis")
