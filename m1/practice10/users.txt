@@ -1,0 +1,12 @@
+Account Number: 1234
+Account Name: Clyde Balaman
+PIN: 1234
+Account Type: Savings Account
+Balance: 15500.00
+
+Account Number: 2025131005
+Account Name: Daryl Flores M.
+PIN: 1234
+Account Type: Student Account
+Balance: 10900.00
+

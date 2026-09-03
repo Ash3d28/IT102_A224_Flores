@@ -1,0 +1,56 @@
+Timestamp: 2026-08-31 18:54:28
+Account Number: 1234
+Account: Clyde Balaman
+Account Type: Savings Account
+Transaction: Deposit
+Amount: ₱2000.00
+Balance After: ₱12000.00
+
+Timestamp: 2026-08-31 18:55:07
+Account Number: 1234
+Account: Clyde Balaman
+Account Type: Savings Account
+Transaction: Deposit
+Amount: ₱5000.00
+Balance After: ₱17000.00
+
+Timestamp: 2026-08-31 18:55:49
+Account Number: 1234
+Account: Clyde Balaman
+Account Type: Savings Account
+Transaction: Withdraw
+Amount: ₱1500.00
+Balance After: ₱15500.00
+
+Timestamp: 2026-09-03 05:25:07
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Deposit
+Amount: ₱100.00
+Balance After: ₱10100.00
+
+Timestamp: 2026-09-03 05:25:13
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Withdraw
+Amount: ₱100.00
+Balance After: ₱10000.00
+
+Timestamp: 2026-09-03 05:25:16
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Withdraw
+Amount: ₱100.00
+Balance After: ₱9900.00
+
+Timestamp: 2026-09-03 05:26:03
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Deposit
+Amount: ₱1000.00
+Balance After: ₱10900.00
+

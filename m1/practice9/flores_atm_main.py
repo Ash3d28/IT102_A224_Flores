@@ -114,7 +114,7 @@ elif choice == "View History":
             hide_index=True
         )
     else:
-        st.info("None none none transactions available.")
+        st.info("No transactions available.")
 
 elif choice == "Analyze Transactions":
     st.header("Transaction Analysis")

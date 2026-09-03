@@ -12,7 +12,7 @@ import flores_bank_utils
 # ==========================================
 
 st.set_page_config(
-    page_title="balaman Bank",
+    page_title="flores Bank",
     page_icon="🏦",
     layout="wide"
 )
@@ -36,7 +36,7 @@ if "account" not in st.session_state:
 # BANK HEADER
 # ==========================================
 
-st.title("balaman BANK")
+st.title("flores BANK")
 
 st.caption(
     "Secure Digital Banking System"
@@ -115,7 +115,7 @@ if not st.session_state.logged_in:
     with register_tab:
 
         st.subheader(
-            "Create Your balaman Bank Account"
+            "Create Your flores Bank Account"
         )
 
         name = st.text_input(
@@ -202,7 +202,7 @@ else:
     # ======================================
 
     st.sidebar.title(
-        "balaman BANK"
+        "flores BANK"
     )
 
     st.sidebar.write(
