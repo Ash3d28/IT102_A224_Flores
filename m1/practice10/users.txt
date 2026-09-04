@@ -8,5 +8,5 @@ Account Number: 2025131005
 Account Name: Daryl Flores M.
 PIN: 1234
 Account Type: Student Account
-Balance: 10900.00
+Balance: 12901.00
 

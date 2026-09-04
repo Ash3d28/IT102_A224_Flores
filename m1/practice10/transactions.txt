@@ -54,3 +54,43 @@ Transaction: Deposit
 Amount: ₱1000.00
 Balance After: ₱10900.00
 
+Timestamp: 2026-09-04 14:20:56
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Deposit
+Amount: ₱2000.00
+Balance After: ₱12900.00
+
+Timestamp: 2026-09-04 14:32:36
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Withdraw
+Amount: ₱7000.00
+Balance After: ₱5900.00
+
+Timestamp: 2026-09-04 14:34:33
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Deposit
+Amount: ₱7000.00
+Balance After: ₱12900.00
+
+Timestamp: 2026-09-04 14:34:54
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Deposit
+Amount: ₱1.00
+Balance After: ₱12901.00
+
+Timestamp: 2026-09-04 14:34:54
+Account Number: 2025131005
+Account: Daryl Flores M.
+Account Type: Student Account
+Transaction: Rewards Redemption
+Amount: ₱10.00
+Balance After: ₱12901.00
+

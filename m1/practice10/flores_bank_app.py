@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import streamlit as st
 
 import flores_bank_auth
@@ -7,16 +9,18 @@ import flores_bank_analysis
 import flores_bank_utils
 
 
+DAILY_WITHDRAWAL_LIMIT = 10000
+
 # ==========================================
 # PAGE CONFIGURATION
 # ==========================================
 
 st.set_page_config(
-    page_title="flores Bank",
+    page_title="Flores Bank",
     page_icon="🏦",
-    layout="wide"
+    layout="centered",
+    initial_sidebar_state="expanded"
 )
-
 
 # ==========================================
 # SESSION STATE
@@ -36,12 +40,11 @@ if "account" not in st.session_state:
 # BANK HEADER
 # ==========================================
 
-st.title("flores BANK")
+st.title("Flores BANK")
 
 st.caption(
     "Secure Digital Banking System"
 )
-
 
 # ==========================================
 # LOGIN / REGISTRATION
@@ -55,7 +58,6 @@ if not st.session_state.logged_in:
             "Register"
         ]
     )
-
 
     # ======================================
     # LOGIN
@@ -107,7 +109,6 @@ if not st.session_state.logged_in:
 
                 st.error(message)
 
-
     # ======================================
     # REGISTRATION
     # ======================================
@@ -115,7 +116,7 @@ if not st.session_state.logged_in:
     with register_tab:
 
         st.subheader(
-            "Create Your flores Bank Account"
+            "Create Your Bank Account"
         )
 
         name = st.text_input(
@@ -185,7 +186,6 @@ if not st.session_state.logged_in:
 
                 st.error(message)
 
-
 # ==========================================
 # LOGGED-IN BANKING APPLICATION
 # ==========================================
@@ -196,13 +196,12 @@ else:
         st.session_state.account
     )
 
-
     # ======================================
     # SIDEBAR
     # ======================================
 
     st.sidebar.title(
-        "flores BANK"
+        "Flores Bank"
     )
 
     st.sidebar.write(
@@ -218,29 +217,87 @@ else:
         f"{account.account_number}"
     )
 
-    st.sidebar.divider()
+    with st.bottom:
+        menu = st.segmented_control(
+            "BANKING MENU",
+            [
+                "📊 Dashboard",
+                "💰 Deposit",
+                "💸 Withdraw",
+                "📝 Transaction History",
+                "📈 Transaction Analysis",
+                "🎁 Rewards Hub"
+            ],
+            default="📊 Dashboard"
+        )
 
+    with st.sidebar.expander(
+        "Change PIN"
+    ):
 
-    menu = st.sidebar.radio(
-        "BANKING MENU",
-        [
-            "Dashboard",
-            "Deposit",
-            "Withdraw",
-            "Transaction History",
-            "Transaction Analysis"
-        ]
-    )
+        current_pin = st.text_input(
+            "Current PIN",
+            type="password",
+            key="current_pin"
+        )
 
+        new_pin = st.text_input(
+            "New 4-Digit PIN",
+            type="password",
+            key="new_pin"
+        )
 
-    st.sidebar.divider()
+        confirm_new_pin = st.text_input(
+            "Confirm New PIN",
+            type="password",
+            key="confirm_new_pin"
+        )
 
+        if st.button(
+            "Update PIN",
+            use_container_width=True
+        ):
+
+            if not account.verify_pin(
+                current_pin
+            ):
+
+                st.error(
+                    "Current PIN is incorrect."
+                )
+
+            elif not flores_bank_auth.validate_pin(
+                new_pin
+            ):
+
+                st.error(
+                    "PIN must contain exactly 4 digits."
+                )
+
+            elif new_pin != confirm_new_pin:
+
+                st.error(
+                    "PIN confirmation does not match."
+                )
+
+            else:
+
+                account.set_pin(
+                    new_pin
+                )
+
+                flores_bank_storage.update_account(
+                    account
+                )
+
+                st.success(
+                    "PIN updated successfully."
+                )
 
     if st.sidebar.button(
         "Logout",
         use_container_width=True
     ):
-
         st.session_state.logged_in = False
 
         st.session_state.account = None
@@ -252,54 +309,47 @@ else:
     # DASHBOARD
     # ======================================
 
-    if menu == "Dashboard":
+    if menu == "📊 Dashboard":
 
-        st.header(
-            f"Welcome, {account.account_name}"
-        )
-
-        st.subheader(
-            "Account Overview"
-        )
-
-        col1, col2, col3 = st.columns(3)
-
-
-        col1.metric(
-            "Current Balance",
-            flores_bank_utils
-            .format_currency(
-                account.check_balance()
+        with st.container(border=True):
+            st.header(
+                f"Welcome, {account.account_name}"
             )
-        )
+
+            st.subheader(
+                "Account Overview"
+            )
+
+            st.divider()
+
+            col1, = st.columns(1)
+
+            col1.metric(
+                "Current Balance",
+                flores_bank_utils
+                .format_currency(
+                    account.check_balance()
+                )
+            )
+
+            col1, col2 = st.columns(2)
+
+            col1.metric(
+                "Account Type",
+                account.get_account_type()
+            )
 
 
-        col2.metric(
-            "Account Type",
-            account.get_account_type()
-        )
-
-
-        col3.metric(
-            "Account Number",
-            account.account_number
-        )
-
-
-        st.divider()
-
-
-        st.info(
-            "Select a banking service from "
-            "the menu on the left."
-        )
-
+            col2.metric(
+                "Account Number",
+                account.account_number
+            )
 
     # ======================================
     # DEPOSIT
     # ======================================
 
-    elif menu == "Deposit":
+    elif menu == "💰 Deposit":
 
         st.header(
             "Deposit Money"
@@ -366,7 +416,7 @@ else:
     # WITHDRAW
     # ======================================
 
-    elif menu == "Withdraw":
+    elif menu == "💸 Withdraw":
 
         st.header(
             "Withdraw Money"
@@ -375,6 +425,48 @@ else:
         st.write(
             f"Available Balance: "
             f"**{flores_bank_utils.format_currency(account.check_balance())}**"
+        )
+
+        today = datetime.now().date()
+        withdrawn_today = 0
+
+        for transaction in (
+            flores_bank_transactions
+            .get_transactions()
+        ):
+
+            if (
+                transaction.get(
+                    "account_number"
+                ) == account.account_number
+                and
+                transaction.get(
+                    "transaction"
+                ) == "Withdraw"
+            ):
+
+                transaction_date = datetime.strptime(
+                    transaction.get(
+                        "timestamp"
+                    ),
+                    "%Y-%m-%d %H:%M:%S"
+                ).date()
+
+                if transaction_date == today:
+
+                    withdrawn_today += transaction.get(
+                        "amount",
+                        0
+                    )
+
+        st.write(
+            f"Daily Withdrawal Limit: "
+            f"**{flores_bank_utils.format_currency(DAILY_WITHDRAWAL_LIMIT)}**"
+        )
+
+        st.write(
+            f"Withdrawn Today: "
+            f"**{flores_bank_utils.format_currency(withdrawn_today)}**"
         )
 
         amount = st.number_input(
@@ -396,6 +488,15 @@ else:
 
                 st.error(
                     "Invalid withdrawal amount."
+                )
+
+            elif (
+                withdrawn_today + amount
+                > DAILY_WITHDRAWAL_LIMIT
+            ):
+
+                st.error(
+                    "Daily withdrawal limit exceeded."
                 )
 
             elif amount > account.check_balance():
@@ -439,7 +540,7 @@ else:
     # TRANSACTION HISTORY
     # ======================================
 
-    elif menu == "Transaction History":
+    elif menu == "📝 Transaction History":
 
         st.header(
             "Transaction History"
@@ -520,150 +621,229 @@ else:
     # TRANSACTION ANALYSIS
     # ======================================
 
-    elif menu == "Transaction Analysis":
+    elif menu == "📈 Transaction Analysis":
 
+        with st.container(border=True):
+
+            st.header(
+                "Transaction Analysis"
+            )
+
+            result = (
+                flores_bank_analysis
+                .analyze_transactions(
+                    account.account_number
+                )
+            )
+
+
+            # ==================================
+            # ANALYSIS 1
+            # TRANSACTION SUMMARY
+            # ==================================
+
+            st.subheader(
+                "1. Transaction Summary"
+            )
+
+            col1, col2, col3 = st.columns(3)
+
+
+            col1.metric(
+                "Total Transactions",
+                result[
+                    "total_transactions"
+                ]
+            )
+
+
+            col2.metric(
+                "Deposits",
+                result[
+                    "deposits"
+                ]
+            )
+
+
+            col3.metric(
+                "Withdrawals",
+                result[
+                    "withdrawals"
+                ]
+            )
+
+
+            st.divider()
+
+
+            # ==================================
+            # ANALYSIS 2
+            # MONEY FLOW
+            # ==================================
+
+            st.subheader(
+                "2. Money Flow Analysis"
+            )
+
+            col1, col2, col3 = st.columns(3)
+
+
+            col1.metric(
+                "Total Deposited",
+                flores_bank_utils
+                .format_currency(
+                    result[
+                        "total_deposited"
+                    ]
+                )
+            )
+
+
+            col2.metric(
+                "Total Withdrawn",
+                flores_bank_utils
+                .format_currency(
+                    result[
+                        "total_withdrawn"
+                    ]
+                )
+            )
+
+
+            col3.metric(
+                "Net Cash Flow",
+                flores_bank_utils
+                .format_currency(
+                    result[
+                        "net_cash_flow"
+                    ]
+                )
+            )
+
+
+            st.divider()
+
+
+            # ==================================
+            # ANALYSIS 3
+            # ACCOUNT ACTIVITY
+            # ==================================
+
+            st.subheader(
+                "3. Account Activity Analysis"
+            )
+
+            col1, col2, col3 = st.columns(3)
+
+
+            col1.metric(
+                "Largest Transaction",
+                flores_bank_utils
+                .format_currency(
+                    result[
+                        "largest_transaction"
+                    ]
+                )
+            )
+
+
+            col2.metric(
+                "Average Transaction",
+                flores_bank_utils
+                .format_currency(
+                    result[
+                        "average_transaction"
+                    ]
+                )
+            )
+
+
+            col3.metric(
+                "Latest Transaction",
+                result[
+                    "latest_transaction"
+                ]
+            )
+
+
+            st.caption(
+                f"Latest Activity: "
+                f"{result['latest_timestamp']}"
+            )
+
+    elif menu == "🎁 Rewards Hub":
         st.header(
-            "Transaction Analysis"
+            "🎁 Rewards Hub"
         )
 
-        result = (
-            flores_bank_analysis
-            .analyze_transactions(
-                account.account_number
-            )
+        points = account.get_reward_points()
+
+        st.metric(
+            "Total Reward Points",
+            f"{points} PTS"
         )
-
-
-        # ==================================
-        # ANALYSIS 1
-        # TRANSACTION SUMMARY
-        # ==================================
 
         st.subheader(
-            "1. Transaction Summary"
+            "Convert Points to Deposit Money"
         )
 
-        col1, col2, col3 = st.columns(3)
-
-
-        col1.metric(
-            "Total Transactions",
-            result[
-                "total_transactions"
-            ]
+        points_to_redeem = st.number_input(
+            "Points to Convert",
+            min_value=0,
+            max_value=points,
+            step=10
         )
-
-
-        col2.metric(
-            "Deposits",
-            result[
-                "deposits"
-            ]
-        )
-
-
-        col3.metric(
-            "Withdrawals",
-            result[
-                "withdrawals"
-            ]
-        )
-
-
-        st.divider()
-
-
-        # ==================================
-        # ANALYSIS 2
-        # MONEY FLOW
-        # ==================================
-
-        st.subheader(
-            "2. Money Flow Analysis"
-        )
-
-        col1, col2, col3 = st.columns(3)
-
-
-        col1.metric(
-            "Total Deposited",
-            flores_bank_utils
-            .format_currency(
-                result[
-                    "total_deposited"
-                ]
-            )
-        )
-
-
-        col2.metric(
-            "Total Withdrawn",
-            flores_bank_utils
-            .format_currency(
-                result[
-                    "total_withdrawn"
-                ]
-            )
-        )
-
-
-        col3.metric(
-            "Net Cash Flow",
-            flores_bank_utils
-            .format_currency(
-                result[
-                    "net_cash_flow"
-                ]
-            )
-        )
-
-
-        st.divider()
-
-
-        # ==================================
-        # ANALYSIS 3
-        # ACCOUNT ACTIVITY
-        # ==================================
-
-        st.subheader(
-            "3. Account Activity Analysis"
-        )
-
-        col1, col2, col3 = st.columns(3)
-
-
-        col1.metric(
-            "Largest Transaction",
-            flores_bank_utils
-            .format_currency(
-                result[
-                    "largest_transaction"
-                ]
-            )
-        )
-
-
-        col2.metric(
-            "Average Transaction",
-            flores_bank_utils
-            .format_currency(
-                result[
-                    "average_transaction"
-                ]
-            )
-        )
-
-
-        col3.metric(
-            "Latest Transaction",
-            result[
-                "latest_transaction"
-            ]
-        )
-
 
         st.caption(
-            f"Latest Activity: "
-            f"{result['latest_timestamp']}"
+            "Conversion rate: 10 Points = ₱1.00"
         )
+
+        if st.button(
+            "Convert to Deposit",
+            disabled=(points_to_redeem <= 0),
+            use_container_width=True
+        ):
+
+            cash_credit = points_to_redeem / 10
+
+            if account.redeem_points_to_balance(
+                points_to_redeem,
+                cash_credit
+            ):
+
+                flores_bank_storage.update_account(
+                    account
+                )
+
+                flores_bank_transactions.record_transaction(
+                    account,
+                    "Deposit",
+                    cash_credit
+                )
+
+                flores_bank_transactions.record_transaction(
+                    account,
+                    "Rewards Redemption",
+                    points_to_redeem
+                )
+
+                st.success(
+                    f"Deposited {flores_bank_utils.format_currency(cash_credit)}."
+                )
+
+        st.subheader(
+            "Available Rewards"
+        )
+
+        rewards = [
+            "⛽ Shell Gas Voucher",
+            "🍔 Jollibee Dine-In Pass",
+            "🛒 Grocery Discount Voucher",
+            "🎬 Movie Ticket Voucher"
+        ]
+
+        for reward in rewards:
+
+            st.write(
+                f"{reward}"
+            )

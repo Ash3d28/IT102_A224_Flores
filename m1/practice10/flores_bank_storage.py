@@ -234,6 +234,10 @@ def update_account(account):
                     account.check_balance()
                 )
 
+                saved_account.set_pin(
+                    account.get_pin()
+                )
+
             file.write(
                 f"Account Number: "
                 f"{saved_account.account_number}\n"
