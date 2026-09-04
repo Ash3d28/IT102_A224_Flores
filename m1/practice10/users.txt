@@ -6,7 +6,13 @@ Balance: 15500.00
 
 Account Number: 2025131005
 Account Name: Daryl Flores M.
-PIN: 1234
+PIN: 1232
 Account Type: Student Account
-Balance: 12901.00
+Balance: 19902.00
+
+Account Number: 89
+Account Name: Mr Yes Man
+PIN: 1000
+Account Type: Savings Account
+Balance: 100000.00
 
